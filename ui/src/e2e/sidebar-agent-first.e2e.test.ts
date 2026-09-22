@@ -235,6 +235,7 @@ suite.define(() => {
                 const state = row
                   .querySelector(".sidebar-session-team-state")
                   ?.getBoundingClientRect();
+                const endcap = row.querySelector(".sidebar-recent-session__details-endcap");
                 return {
                   left: title.left,
                   iconLeft: icon.left,
@@ -244,6 +245,9 @@ suite.define(() => {
                   stateRight: state?.right,
                   titleRight: title.right,
                   height: row.getBoundingClientRect().height,
+                  markInset: endcap
+                    ? Number.parseFloat(getComputedStyle(endcap).marginInlineEnd)
+                    : 0,
                 };
               });
               return {
@@ -265,7 +269,8 @@ suite.define(() => {
             expect(row.height).toBe(touch ? 44 : 32);
             if (row.stateLeft !== undefined) {
               expect(row.titleRight).toBeLessThanOrEqual(row.stateLeft);
-              expect(row.stateRight).toBeCloseTo(row.right - (touch ? 96 : 0), 1);
+              expect(row.markInset).toBeGreaterThan(0);
+              expect(row.stateRight).toBeCloseTo(row.right - (touch ? 96 : 0) - row.markInset, 1);
             } else if (!touch) {
               expect(row.titleRight).toBeCloseTo(row.right, 1);
             }

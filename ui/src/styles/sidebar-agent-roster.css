@@ -230,11 +230,7 @@ openclaw-sidebar-agent-roster {
   grid-template-columns: 20px minmax(0, 1fr);
   gap: 4px;
   min-height: 32px;
-  /* Zero padding puts the trailing ring on the selection pill's corner.
-     Inset by the same radius the row paints, after the shorthand so a
-     single-class padding rule cannot win. */
   padding: 0;
-  padding-inline-end: var(--radius-md);
 }
 .sidebar-recent-session--team > .sidebar-recent-session__link {
   grid-column: 2;
@@ -264,7 +260,11 @@ openclaw-sidebar-agent-roster {
   display: flex;
   align-items: center;
   gap: var(--team-slot-gap);
+  /* The row stays padding: 0 so a title with no trailing mark still reaches
+     the edge. The mark itself is inset by the pill radius, or the corner
+     clips it. The longhand follows margin: 0 so it is not reset. */
   margin: 0;
+  margin-inline-end: var(--radius-md);
 }
 .sidebar-recent-session--team openclaw-viewer-facepile:not(:has(.viewer-facepile)),
 .sidebar-recent-session--team

@@ -19,11 +19,16 @@ function ruleBody(selector: string): string {
 }
 
 describe("team session row trailing inset", () => {
-  it("insets the roster row by the pill radius so the status mark clears the corner", () => {
-    const body = ruleBody(".sidebar-recent-session.sidebar-recent-session--team");
-    const cleared = body.lastIndexOf("padding: 0");
-    const inset = body.lastIndexOf("padding-inline-end: var(--radius-md)");
-    expect(inset, "trailing inset must follow the zero padding shorthand").toBeGreaterThan(cleared);
+  it("insets only the trailing mark by the pill radius", () => {
+    const row = ruleBody(".sidebar-recent-session.sidebar-recent-session--team");
+    expect(row).toContain("padding: 0");
+    expect(row).not.toContain("padding-inline-end");
+    const endcap = ruleBody(
+      ".sidebar-recent-session--team .sidebar-recent-session__details-endcap",
+    );
+    const cleared = endcap.lastIndexOf("margin: 0");
+    const inset = endcap.lastIndexOf("margin-inline-end: var(--radius-md)");
+    expect(inset, "trailing inset must follow the zero margin shorthand").toBeGreaterThan(cleared);
   });
 
   it("keeps the hover action reserve on the link, not a second row inset", () => {

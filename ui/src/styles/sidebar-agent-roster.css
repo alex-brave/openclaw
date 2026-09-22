@@ -230,7 +230,11 @@ openclaw-sidebar-agent-roster {
   grid-template-columns: 20px minmax(0, 1fr);
   gap: 4px;
   min-height: 32px;
+  /* Zero padding puts the trailing ring on the selection pill's corner.
+     Inset by the same radius the row paints, after the shorthand so a
+     single-class padding rule cannot win. */
   padding: 0;
+  padding-inline-end: var(--radius-md);
 }
 .sidebar-recent-session--team > .sidebar-recent-session__link {
   grid-column: 2;

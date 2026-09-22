@@ -316,7 +316,7 @@ suite.define(() => {
           const collapsedSlots = parent.locator(".sidebar-session-team-state");
           const collapsedBounds = (await collapsedSlots.boundingBox())!;
           expect(collapsedBounds.x + collapsedBounds.width).toBeCloseTo(
-            beforeFocus.rows[0]!.right - (touch ? 96 : 0),
+            beforeFocus.rows[0]!.right - (touch ? 96 : 0) - beforeFocus.rows[0]!.markInset,
             1,
           );
           expect(

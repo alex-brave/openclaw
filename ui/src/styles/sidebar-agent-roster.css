@@ -260,11 +260,8 @@ openclaw-sidebar-agent-roster {
   display: flex;
   align-items: center;
   gap: var(--team-slot-gap);
-  /* The row stays padding: 0 so a title with no trailing mark still reaches
-     the edge. The mark itself is inset by the pill radius, or the corner
-     clips it. The longhand follows margin: 0 so it is not reset. */
   margin: 0;
-  margin-inline-end: var(--radius-md);
+  margin-inline-end: calc(var(--radius-md) * var(--openclaw-corner-radius-scale));
 }
 .sidebar-recent-session--team openclaw-viewer-facepile:not(:has(.viewer-facepile)),
 .sidebar-recent-session--team

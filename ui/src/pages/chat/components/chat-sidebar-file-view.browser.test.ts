@@ -257,11 +257,10 @@ describe.runIf(browserMode)("chat file editor", () => {
 
       await userEvent.keyboard("{Escape}");
       await expect.poll(() => panel.querySelector('input[type="search"]')).toBeNull();
-      expect(document.activeElement).toBe(panel.querySelector(".cm-content"));
+      expect(document.activeElement).toBe(searchToggle);
       expect(searchToggle.getAttribute("aria-pressed")).toBe("false");
     }
 
-    searchToggle.focus();
     await userEvent.keyboard("{Enter}");
     await expect
       .poll(() => document.activeElement === panel.querySelector('input[type="search"]'))
@@ -290,11 +289,16 @@ describe.runIf(browserMode)("chat file editor", () => {
     await userEvent.keyboard("{Escape}");
     await expect.poll(() => panel.querySelector('input[type="search"]')).toBeNull();
 
-    const reader = panel.querySelector<HTMLElement>(".cm-content")!;
+    const searchToggle = button(panel, "Search in file");
+    expect(document.activeElement).toBe(searchToggle);
     scroller.scrollTop = 0;
     await userEvent.keyboard("{PageDown}");
     await expect.poll(() => scroller.scrollTop).toBeGreaterThan(0);
-    expect(document.activeElement).toBe(reader);
+    expect(document.activeElement).toBe(searchToggle);
+    const paged = scroller.scrollTop;
+    await userEvent.keyboard("{PageUp}");
+    await expect.poll(() => scroller.scrollTop).toBeLessThan(paged);
+    expect(document.activeElement).toBe(searchToggle);
   });
 
   it("keeps the named file view keyboard accessible through editing and saving", async () => {

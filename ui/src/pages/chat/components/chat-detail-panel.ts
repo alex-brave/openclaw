@@ -417,6 +417,13 @@ class ChatDetailPanel extends OpenClawLightDomElement {
       event.preventDefault();
       event.stopPropagation();
       this.toggleFileSearch();
+      // The search field is about to unmount. Page Down reads the file only
+      // when the CodeMirror scroller owns focus; the toolbar button does not.
+      const reader = this.querySelector<HTMLElement>(".cm-content");
+      if (reader) {
+        reader.focus({ preventScroll: true });
+        return;
+      }
       this.querySelector<HTMLButtonElement>(".sidebar-file-view__search-toggle")?.focus({
         preventScroll: true,
       });

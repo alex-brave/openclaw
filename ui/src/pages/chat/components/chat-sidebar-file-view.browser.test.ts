@@ -257,10 +257,11 @@ describe.runIf(browserMode)("chat file editor", () => {
 
       await userEvent.keyboard("{Escape}");
       await expect.poll(() => panel.querySelector('input[type="search"]')).toBeNull();
-      expect(document.activeElement).toBe(searchToggle);
+      expect(document.activeElement).toBe(panel.querySelector(".cm-content"));
       expect(searchToggle.getAttribute("aria-pressed")).toBe("false");
     }
 
+    searchToggle.focus();
     await userEvent.keyboard("{Enter}");
     await expect
       .poll(() => document.activeElement === panel.querySelector('input[type="search"]'))
@@ -269,6 +270,31 @@ describe.runIf(browserMode)("chat file editor", () => {
     await userEvent.click(searchToggle);
     await expect.poll(() => panel.querySelector('input[type="search"]')).toBeNull();
     expect(document.activeElement).toBe(searchToggle);
+  });
+
+  it("keeps paging through a read-only file after Escape closes search", async () => {
+    const panel = await mountFile({
+      kind: "file",
+      path: "long.txt",
+      name: "long.txt",
+      content: Array.from({ length: 80 }, (_, index) => `line ${index} needle`).join("\n"),
+    });
+    const scroller = panel.querySelector<HTMLElement>(".cm-scroller")!;
+    scroller.style.maxHeight = "140px";
+    await expect.poll(() => scroller.scrollHeight).toBeGreaterThan(scroller.clientHeight + 40);
+
+    await userEvent.click(button(panel, "Search in file"));
+    const input = panel.querySelector<HTMLInputElement>('input[type="search"]')!;
+    await expect.poll(() => document.activeElement).toBe(input);
+    await userEvent.fill(input, "needle");
+    await userEvent.keyboard("{Escape}");
+    await expect.poll(() => panel.querySelector('input[type="search"]')).toBeNull();
+
+    const reader = panel.querySelector<HTMLElement>(".cm-content")!;
+    scroller.scrollTop = 0;
+    await userEvent.keyboard("{PageDown}");
+    await expect.poll(() => scroller.scrollTop).toBeGreaterThan(0);
+    expect(document.activeElement).toBe(reader);
   });
 
   it("keeps the named file view keyboard accessible through editing and saving", async () => {
